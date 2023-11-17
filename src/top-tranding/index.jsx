@@ -1,13 +1,13 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import OwlCarousel from 'react-owl-carousel';  
 import 'owl.carousel/dist/assets/owl.carousel.css';  
 import 'owl.carousel/dist/assets/owl.theme.default.css';  
 import { useNavigate } from 'react-router-dom';
-import query from "../queries/catgory-by-id";
 import baseUrl from "../config";
 import moment from 'moment';
+import { getCategorybyId } from "../api-services/category";
+import { category_id } from "../queries/category";
 
 
 
@@ -17,18 +17,12 @@ const TopTranding = ({ categoryId }) => {
     const [loading, setLoading] = useState(true);
     
   
-
+   
   
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.post(process.env.REACT_APP_GRAPHQL_URL, {
-            query,
-            variables: {
-              categoryId: categoryId,
-            },
-          });
-  
+          const response = await getCategorybyId(category_id, categoryId) ;  
           const responseData = response?.data?.data;
           if (responseData && responseData?.category && responseData?.category?.data) {
             setPost(responseData?.category?.data?.attributes?.posts?.data);

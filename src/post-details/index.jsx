@@ -4,33 +4,15 @@ import { useQuery, useMutation, gql } from '@apollo/client';
 import Header from "../header";
 import { FacebookShareButton, TwitterShareButton } from 'react-share';
 import CommentForm from "../comment-form";
-import axios from "axios";
 import { useNavigate } from 'react-router-dom';
-import query from "../queries/categories";
-import GET_POST_QUERY from "../queries/post-by-id"
+import {GET_POST_QUERY, ADD_COMMENT_MUTATION} from "../queries/post";
 import baseUrl from "../config";
 import Footer from "../footer";
+import {query} from '../queries/category';
+import { getAllCategories } from "../api-services/category";
 
 
-const ADD_COMMENT_MUTATION = gql`
-  mutation addComment($name: String, $cmtBody: String, $postid: ID!) {
-    createComment(
-      data: {
-        Name: $name
-        CommentBody: $cmtBody
-        post: $postid
-      }
-    ) {
-      data {
-        id
-        attributes {
-          Name
-          CommentBody
-        }
-      }
-    }
-  }
-`;
+
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -43,7 +25,7 @@ const PostDetails = () => {
   useEffect(() => {
     const catData = async () => {
       try {
-        const response = await axios.post(process.env.REACT_APP_GRAPHQL_URL, { query });
+        const response = await getAllCategories({ query });
         const responseData = response?.data?.data?.categories?.data;
         setCategory(responseData);  
        
@@ -86,13 +68,12 @@ const PostDetails = () => {
   });
 
   const handleCommentSubmit = (newComment) => {
-    // Update the comments only if it doesn't exist in the current comments list
     const commentExists = post?.comments?.data?.some(
       (comment) => comment?.attributes?.id === newComment?.id
     );
     refetch();
     if (!commentExists) {
-      refetch(); // Refetch the post and comments data to get the latest updates
+      refetch();
     }
   };
 
@@ -175,7 +156,7 @@ const PostDetails = () => {
                 return(
                   <li key={id} onClick={() => handlePostClick(catId)}>
                     {item?.attributes?.Title} 
-                    ({item?.attributes?.posts?.data?.length})
+                    <span style={{color: "#f10000"}}> ({item?.attributes?.posts?.data?.length})</span>
                   </li>
                 )
               })}

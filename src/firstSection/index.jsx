@@ -1,11 +1,10 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
-import query from "../queries/categories"
 import baseUrl from "../config";
-
+import { getAllCategories } from "../api-services/category";
+import { query } from "../queries/category";
 const CatSection = () =>{
 const navigate = useNavigate();
 const [state, setState] = useState(null);
@@ -18,7 +17,7 @@ const [loading, setLoading] = useState(true);
     // Function to fetch data from your GraphQL server
     const fetchData = async () => {
       try {
-        const response = await axios.post(process.env.REACT_APP_GRAPHQL_URL, { query });
+         const response = await getAllCategories({ query });
          const { data } = response.data; 
          setState(data.categories.data); 
         setLoading(false);
@@ -42,8 +41,6 @@ const handlePostClick = (catId) => {
 
 const gk = state?.filter((gk_data) => gk_data?.attributes?.Title === 'General Knowledge') || [];
 const general = gk[0]?.attributes?.posts?.data || [];
-
-
 const beauty = state?.filter((b_data) => b_data?.attributes?.Title == 'Beauty Tips' ) || [] ;
 const beautytips = beauty[0]?.attributes?.posts?.data || [];
 const heath_tips = state?.filter((ht_data) => ht_data?.attributes?.Title == 'Health Tips' ) || [];

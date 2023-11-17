@@ -1,31 +1,9 @@
 import React, { useState } from "react";
-// ... (other imports)
-
 import { gql, useMutation } from '@apollo/client';
 import { useParams } from "react-router-dom";
+import {CREATE_USER_MUTATION} from "../queries/post";
 
-const CREATE_USER_MUTATION = gql`
-  mutation addComment($name: String, $cmtBody: String, $postid: ID!) {
-    createComment(data: {
-      Name: $name,
-      CommentBody: $cmtBody,
-      post: $postid
-    }) {
-      data {
-        id
-        attributes {
-          Name
-          CommentBody
-          post{
-            data{
-              id
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+
 
 const CommentForm = ({ updateComments }) => {
   const { id } = useParams();
@@ -48,8 +26,7 @@ const CommentForm = ({ updateComments }) => {
       });
       if (data && data.createComment && data.createComment.data && data.createComment.data.attributes) {
         const newComment = data.createComment.data.attributes;
-        // Do not call onCommentSubmit here
-        // Call the callback to update comments in the parent component
+      
         updateComments(newComment);
         setState({ comnt: '', Uname: '' }); // Clear the form state
       } else {

@@ -4720,3 +4720,7 @@ ul {
   height: 290px;
   object-fit: cover;
 }
+
+.top-post-wrap {
+  cursor: pointer;
+}

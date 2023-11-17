@@ -1,12 +1,12 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import Header from "../header"; 
 import { useNavigate } from 'react-router-dom';
-import query from "../queries/catgory-by-id";
 import baseUrl from "../config";
 import Footer from "../footer";
+import { category_id } from "../queries/category";
+import { getCategorybyId } from "../api-services/category";
 
 
 
@@ -21,12 +21,7 @@ const CategoryList = () => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.post(process.env.REACT_APP_GRAPHQL_URL, {
-              query,
-              variables: {
-                categoryId: id,
-              },
-            });
+            const response = await getCategorybyId(category_id, id) ; 
     
             const responseData = response.data.data;
             const Title = responseData.category.data.attributes.Title;

@@ -1,45 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import axios from "axios";
 import Autosuggest from 'react-autosuggest'; // Import the library
 import Logo from "../assets/images/dummy-logo.png";
+import { query } from "../queries/post";
+import { getAllCategories } from "../api-services/category";
+import { CATEGORY_TITLE } from "../queries/category";
 
-
-const query = `
-  query {
-    posts {
-      data {
-        id
-        attributes {
-          Title
-          categories {
-            data {
-              attributes {
-                Title
-              }
-              id
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-
-const query1 = `
-query{
-  categories{
-   data{
-     id
-     attributes{
-       Title
-     }
-   }
- }
-}
-`;
 
 
 const Header = () => {
@@ -52,9 +19,7 @@ const Header = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post(process.env.REACT_APP_GRAPHQL_URL, {
-          query,
-        });
+        const response = await getAllCategories({ query });
         setData(response.data.data.posts.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -93,7 +58,7 @@ const Header = () => {
   };
 
   const inputProps = {
-    placeholder: "Search...",
+    placeholder: "Search Post here...",
     value: searchQuery,
     onChange: (e, { newValue }) => setSearchQuery(newValue),
   };
@@ -118,9 +83,7 @@ const Header = () => {
 useEffect(() => {
   const getcatId = async () => {
     try {
-      const response1 = await axios.post(process.env.REACT_APP_GRAPHQL_URL, {
-        query: query1, 
-      });
+      const response1 = await getAllCategories({ query: CATEGORY_TITLE });
       setCatid(response1.data.data.categories.data)
 
     } catch (error) {
@@ -128,7 +91,7 @@ useEffect(() => {
     }
   };
   getcatId();
-}, [query1]); 
+}, [CATEGORY_TITLE]); 
 
 
 
@@ -140,7 +103,7 @@ useEffect(() => {
             <div className="form-group">
                 <input type="text" className="form-control" placeholder="Search....."/>
             </div>
-            <button type="submit" className="submit-btn"><i className="fa fa-search"></i></button>
+            {/* <button type="submit" className="submit-btn"><i className="fa fa-search"></i></button> */}
         </form>
     </div>
  
@@ -153,7 +116,7 @@ useEffect(() => {
         <div className="container">
             <div className="row">
                 <div className="col-md-6 text-md-right text-left">
-                    <a href="#" className="adbar-right">
+                    <a href="/" className="adbar-right">
                         <img src={Logo} alt="img" style={{width: "100px"}}/>
                     </a>
                 </div>
